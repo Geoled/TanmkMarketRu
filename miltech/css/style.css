@@ -1,1 +1,49 @@
+* { font-family: 'Inter', sans-serif; }
+.font-mono { font-family: 'JetBrains Mono', monospace; }
 
+:root {
+    --bg-primary: #0f1419;
+    --bg-secondary: #1a2332;
+    --bg-tertiary: #243447;
+    --accent: #d97706;
+    --accent-hover: #f59e0b;
+    --text-primary: #e8eaed;
+    --text-secondary: #9ca3af;
+    --border: #2d3f52;
+}
+
+body { background: var(--bg-primary); color: var(--text-primary); }
+
+.scrollbar-thin::-webkit-scrollbar { width: 6px; }
+.scrollbar-thin::-webkit-scrollbar-track { background: var(--bg-secondary); }
+.scrollbar-thin::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+.scrollbar-thin::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+.card-hover { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+.card-hover:hover { transform: translateY(-4px); box-shadow: 0 20px 40px rgba(217, 119, 6, 0.1); border-color: var(--accent); }
+
+.badge-demil { background: linear-gradient(135deg, #059669, #047857); }
+.badge-museum { background: linear-gradient(135deg, #7c3aed, #6d28d9); }
+.badge-parts { background: linear-gradient(135deg, #dc2626, #b91c1c); }
+.badge-active { background: linear-gradient(135deg, #d97706, #b45309); }
+
+.filter-chip { transition: all 0.2s; }
+.filter-chip:hover, .filter-chip.active { background: var(--accent); color: white; border-color: var(--accent); }
+
+.modal-overlay { backdrop-filter: blur(8px); }
+
+@keyframes slideUp { 
+    from { opacity: 0; transform: translateY(20px); } 
+    to { opacity: 1; transform: translateY(0); } 
+}
+.animate-slide-up { animation: slideUp 0.3s ease-out; }
+
+.spec-row { border-bottom: 1px solid var(--border); }
+.spec-row:last-child { border-bottom: none; }
+
+.map-container { height: 400px; border-radius: 12px; overflow: hidden; z-index: 1; }
+
+/* Leaflet Dark Theme Overrides */
+.leaflet-popup-content-wrapper { background: var(--bg-secondary); color: var(--text-primary); border-radius: 8px; border: 1px solid var(--border); }
+.leaflet-popup-tip { background: var(--bg-secondary); }
+.leaflet-container a.leaflet-popup-close-button { color: var(--text-secondary); }
