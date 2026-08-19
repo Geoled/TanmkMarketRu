@@ -13,46 +13,33 @@ out/
 .env.local
 .env.*
 
-# IDE specific
-.vscode/
-.idea/
-*.swp
-*.swo
-
-# Logs
-*.log
-
-# Temporary files
-*.tmp
-
-# Python
+# Python cache
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
-.Python
-env/
-venv/
-.venv/
-pip-log.txt
-pip-delete-this-directory.txt
-*.so
-.Python
-.pytest_cache/
-.mypy_cache/
 
-# Database
-prisma/migrations/
+# Logs
+*.log
 
-# OS generated files
+# Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*.tmp
+
+# OS files
 .DS_Store
 Thumbs.db
 
-# Coverage reports
+# Database
+prisma/migrations/
+*.db
+*.db-journal
+
+# Coverage
 coverage/
 htmlcov/
 .coverage
-
-# Local configuration
-.env.local
 ```

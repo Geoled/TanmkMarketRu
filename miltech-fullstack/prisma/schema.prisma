@@ -7,19 +7,20 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 model User {
-  id        String   @id @default(uuid())
-  email     String   @unique
-  name      String?
-  password  String
-  role      Role     @default(USER)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  posts     Post[]
-  comments  Comment[]
+  id           String        @id @default(uuid())
+  email        String        @unique
+  name         String?
+  password     String
+  role         Role          @default(USER)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  posts        Post[]
+  comments     Comment[]
+  listings     Listing[]
+  transactions Transaction[]
 }
 
 enum Role {
@@ -49,4 +50,44 @@ model Comment {
   author    User     @relation(fields: [authorId], references: [id])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+enum ListingStatus {
+  ACTIVE
+  SOLD
+  ARCHIVED
+}
+
+model Listing {
+  id             String         @id @default(uuid())
+  title          String
+  description    String
+  category       String
+  price          Float
+  location       String
+  latitude       Float?
+  longitude      Float?
+  status         ListingStatus  @default(ACTIVE)
+  year           Int?
+  combatWeight   Float?
+  country        String?
+  imageUrl       String?
+  attributes     Json?
+  has3D          Boolean        @default(false)
+  hasBlueprint   Boolean        @default(false)
+  compatible     String[]
+  sellerId       String
+  seller         User           @relation(fields: [sellerId], references: [id])
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  transactions   Transaction[]
+}
+
+model Transaction {
+  id        String   @id @default(uuid())
+  listingId String
+  listing   Listing  @relation(fields: [listingId], references: [id])
+  buyerId   String
+  buyer     User     @relation(fields: [buyerId], references: [id])
+  createdAt DateTime @default(now())
 }
