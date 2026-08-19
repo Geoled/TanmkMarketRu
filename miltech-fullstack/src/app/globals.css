@@ -1,0 +1,579 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600&family=Share+Tech+Mono&display=swap');
+
+:root {
+  /* Military Color Palette */
+  --tactical-black: #0a0e12;
+  --tactical-dark: #12181f;
+  --olive-drab: #4a5d3a;
+  --olive-dark: #3a4a2e;
+  --steel-gray: #2d3748;
+  --steel-light: #4a5568;
+  --warning-orange: #ed8936;
+  --alert-red: #e53e3e;
+  --radioactive-green: #48bb78;
+  --radioactive-dark: #38a169;
+  
+  /* Legacy compatibility */
+  --bg-primary: var(--tactical-black);
+  --bg-secondary: var(--steel-gray);
+  --accent: var(--warning-orange);
+  --text-primary: #ffffff;
+  --text-secondary: #9ca3af;
+  --foreground: #ededed;
+  
+  /* HUD colors */
+  --hud-blue: #3182ce;
+  --hud-cyan: #38b2ac;
+  --hud-purple: #805ad5;
+}
+
+@theme inline {
+  --color-background: var(--tactical-black);
+  --color-foreground: var(--foreground);
+  --font-sans: 'Inter', var(--font-geist-sans);
+  --font-mono: 'Share Tech Mono', var(--font-geist-mono);
+  --font-display: 'Rajdhani', sans-serif;
+  --color-accent: var(--warning-orange);
+  --color-olive: var(--olive-drab);
+  --color-steel: var(--steel-gray);
+  --color-radioactive: var(--radioactive-green);
+  --color-alert: var(--alert-red);
+}
+
+body {
+  background: var(--tactical-black);
+  color: var(--text-primary);
+  font-family: 'Inter', Arial, Helvetica, sans-serif;
+  overflow-x: hidden;
+}
+
+/* ============================================
+   MILITARY UTILITY CLASSES
+   ============================================ */
+
+/* Tactical Grid Background */
+.tactical-grid {
+  background-image: 
+    linear-gradient(rgba(74, 93, 58, 0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(74, 93, 58, 0.1) 1px, transparent 1px);
+  background-size: 40px 40px;
+  position: relative;
+}
+
+.tactical-grid::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at center, transparent 0%, var(--tactical-black) 100%);
+  pointer-events: none;
+}
+
+/* Scan Line Effect */
+.scan-line {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(to bottom, transparent, var(--radioactive-green), transparent);
+  opacity: 0.3;
+  animation: scan 4s linear infinite;
+  pointer-events: none;
+  z-index: 9999;
+}
+
+@keyframes scan {
+  0% { transform: translateY(-100vh); }
+  100% { transform: translateY(100vh); }
+}
+
+/* Glow Effects */
+.glow-orange {
+  box-shadow: 0 0 20px rgba(237, 137, 54, 0.5),
+              0 0 40px rgba(237, 137, 54, 0.3),
+              0 0 60px rgba(237, 137, 54, 0.1);
+}
+
+.glow-green {
+  box-shadow: 0 0 20px rgba(72, 187, 120, 0.5),
+              0 0 40px rgba(72, 187, 120, 0.3),
+              0 0 60px rgba(72, 187, 120, 0.1);
+}
+
+.glow-red {
+  box-shadow: 0 0 20px rgba(229, 62, 62, 0.5),
+              0 0 40px rgba(229, 62, 62, 0.3),
+              0 0 60px rgba(229, 62, 62, 0.1);
+}
+
+/* Classified Stamp */
+.classified-stamp {
+  border: 3px solid var(--alert-red);
+  color: var(--alert-red);
+  padding: 0.5rem 1rem;
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  transform: rotate(-5deg);
+  display: inline-block;
+  opacity: 0.8;
+  position: relative;
+}
+
+.classified-stamp::before {
+  content: '★ ';
+}
+
+.classified-stamp::after {
+  content: ' ★';
+}
+
+/* HUD Border */
+.hud-border {
+  border: 1px solid var(--radioactive-green);
+  position: relative;
+  background: rgba(18, 24, 31, 0.9);
+}
+
+.hud-border::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  right: -1px;
+  bottom: -1px;
+  background: linear-gradient(45deg, 
+    var(--radioactive-green) 0%, 
+    transparent 20%, 
+    transparent 80%, 
+    var(--radioactive-green) 100%);
+  z-index: -1;
+  opacity: 0.5;
+}
+
+.hud-border-corner {
+  position: relative;
+}
+
+.hud-border-corner::after {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  width: 20px;
+  height: 20px;
+  border-top: 2px solid var(--radioactive-green);
+  border-left: 2px solid var(--radioactive-green);
+}
+
+.hud-border-corner::before {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  right: -2px;
+  width: 20px;
+  height: 20px;
+  border-bottom: 2px solid var(--radioactive-green);
+  border-right: 2px solid var(--radioactive-green);
+}
+
+/* Noise Texture Overlay */
+.noise-overlay {
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  opacity: 0.03;
+  pointer-events: none;
+  z-index: 9998;
+}
+
+/* CRT Monitor Effect */
+.crt-effect {
+  position: relative;
+}
+
+.crt-effect::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.15) 0px,
+    rgba(0, 0, 0, 0.15) 1px,
+    transparent 1px,
+    transparent 2px
+  );
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* Glitch Effect */
+.glitch {
+  position: relative;
+  animation: glitch-skew 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) both infinite;
+}
+
+.glitch::before,
+.glitch::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.glitch::before {
+  animation: glitch-anim-1 2.5s infinite linear alternate-reverse;
+  clip-path: polygon(0 0, 100% 0, 100% 35%, 0 35%);
+  transform: translate(-2px, -2px);
+  opacity: 0.8;
+}
+
+.glitch::after {
+  animation: glitch-anim-2 3s infinite linear alternate-reverse;
+  clip-path: polygon(0 80%, 100% 20%, 100% 100%, 0 100%);
+  transform: translate(2px, 2px);
+  opacity: 0.8;
+}
+
+@keyframes glitch-anim-1 {
+  0% { clip-path: polygon(0 2%, 100% 2%, 100% 5%, 0 5%); }
+  20% { clip-path: polygon(0 15%, 100% 15%, 100% 15%, 0 15%); }
+  40% { clip-path: polygon(0 10%, 100% 10%, 100% 5%, 0 5%); }
+  60% { clip-path: polygon(0 1%, 100% 1%, 100% 2%, 0 2%); }
+  80% { clip-path: polygon(0 33%, 100% 33%, 100% 33%, 0 33%); }
+  100% { clip-path: polygon(0 44%, 100% 44%, 100% 44%, 0 44%); }
+}
+
+@keyframes glitch-anim-2 {
+  0% { clip-path: polygon(0 15%, 100% 15%, 100% 15%, 0 15%); }
+  20% { clip-path: polygon(0 3%, 100% 3%, 100% 3%, 0 3%); }
+  40% { clip-path: polygon(0 5%, 100% 5%, 100% 20%, 0 20%); }
+  60% { clip-path: polygon(0 13%, 100% 13%, 100% 17%, 0 17%); }
+  80% { clip-path: polygon(0 77%, 100% 77%, 100% 77%, 0 77%); }
+  100% { clip-path: polygon(0 10%, 100% 10%, 100% 10%, 0 10%); }
+}
+
+@keyframes glitch-skew {
+  0% { transform: skew(0deg); }
+  10% { transform: skew(-0.5deg); }
+  20% { transform: skew(0.5deg); }
+  30% { transform: skew(0deg); }
+  100% { transform: skew(0deg); }
+}
+
+/* Pulse Animation */
+@keyframes pulse-military {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.animate-pulse-military {
+  animation: pulse-military 2s ease-in-out infinite;
+}
+
+/* Typewriter Effect */
+.typewriter {
+  overflow: hidden;
+  border-right: 2px solid var(--warning-orange);
+  white-space: nowrap;
+  animation: typing 3.5s steps(40, end), blink-caret 0.75s step-end infinite;
+}
+
+@keyframes typing {
+  from { width: 0; }
+  to { width: 100%; }
+}
+
+@keyframes blink-caret {
+  from, to { border-color: transparent; }
+  50% { border-color: var(--warning-orange); }
+}
+
+/* Military Button Style */
+.btn-military {
+  position: relative;
+  clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+  background: linear-gradient(135deg, var(--steel-gray) 0%, var(--tactical-dark) 100%);
+  border: 1px solid var(--steel-light);
+  color: var(--text-primary);
+  padding: 0.75rem 1.5rem;
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  transition: all 0.3s ease;
+}
+
+.btn-military:hover {
+  background: linear-gradient(135deg, var(--olive-drab) 0%, var(--olive-dark) 100%);
+  border-color: var(--radioactive-green);
+  box-shadow: 0 0 20px rgba(72, 187, 120, 0.4);
+  transform: translateY(-2px);
+}
+
+.btn-military.btn-primary {
+  background: linear-gradient(135deg, var(--warning-orange) 0%, #c05621 100%);
+  border-color: var(--warning-orange);
+}
+
+.btn-military.btn-primary:hover {
+  background: linear-gradient(135deg, #f6ad55 0%, #dd6b20 100%);
+  box-shadow: 0 0 30px rgba(237, 137, 54, 0.6);
+}
+
+.btn-military.btn-danger {
+  background: linear-gradient(135deg, var(--alert-red) 0%, #c53030 100%);
+  border-color: var(--alert-red);
+}
+
+.btn-military.btn-danger:hover {
+  background: linear-gradient(135deg, #fc8181 0%, #e53e3e 100%);
+  box-shadow: 0 0 30px rgba(229, 62, 62, 0.6);
+}
+
+/* Corner Decorations */
+.corner-decor {
+  position: relative;
+}
+
+.corner-decor::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 30px;
+  height: 30px;
+  border-top: 2px solid var(--warning-orange);
+  border-left: 2px solid var(--warning-orange);
+}
+
+.corner-decor::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 30px;
+  height: 30px;
+  border-bottom: 2px solid var(--warning-orange);
+  border-right: 2px solid var(--warning-orange);
+}
+
+/* Stencil Text Effect */
+.stencil-text {
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  position: relative;
+}
+
+.stencil-text::before {
+  content: attr(data-text);
+  position: absolute;
+  left: 2px;
+  top: 2px;
+  opacity: 0.3;
+  filter: blur(2px);
+}
+
+/* Technical Grid Overlay */
+.tech-grid-overlay {
+  background-image: 
+    linear-gradient(rgba(74, 93, 58, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(74, 93, 58, 0.05) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+/* Status Badge (Military Patch Style) */
+.status-badge {
+  position: relative;
+  padding: 0.25rem 0.75rem;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  clip-path: polygon(5px 0, 100% 0, 100% calc(100% - 5px), calc(100% - 5px) 100%, 0 100%, 0 5px);
+}
+
+.status-badge-active {
+  background: var(--radioactive-green);
+  color: var(--tactical-black);
+}
+
+.status-badge-sold {
+  background: var(--alert-red);
+  color: white;
+}
+
+.status-badge-museum {
+  background: var(--hud-purple);
+  color: white;
+}
+
+/* Range Slider (Scope Style) */
+.scope-slider {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 4px;
+  background: var(--steel-gray);
+  outline: none;
+  position: relative;
+}
+
+.scope-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  background: var(--warning-orange);
+  cursor: pointer;
+  clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+  transition: all 0.2s ease;
+}
+
+.scope-slider::-webkit-slider-thumb:hover {
+  background: var(--radioactive-green);
+  transform: scale(1.2);
+  box-shadow: 0 0 15px var(--radioactive-green);
+}
+
+/* Military Checkbox */
+.military-checkbox {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--steel-light);
+  background: var(--tactical-dark);
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.military-checkbox:checked {
+  background: var(--olive-drab);
+  border-color: var(--radioactive-green);
+}
+
+.military-checkbox:checked::after {
+  content: '✓';
+  position: absolute;
+  color: white;
+  font-size: 14px;
+  font-weight: bold;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.military-checkbox:hover {
+  border-color: var(--warning-orange);
+}
+
+/* Loading Skeleton with Pulse */
+.skeleton-military {
+  background: linear-gradient(
+    90deg,
+    var(--tactical-dark) 0%,
+    var(--steel-gray) 50%,
+    var(--tactical-dark) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 2px;
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* Fade In Animation */
+.fade-in {
+  animation: fadeIn 0.5s ease-in forwards;
+  opacity: 0;
+}
+
+.fade-in-delay-1 { animation-delay: 0.1s; }
+.fade-in-delay-2 { animation-delay: 0.2s; }
+.fade-in-delay-3 { animation-delay: 0.3s; }
+.fade-in-delay-4 { animation-delay: 0.4s; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Stagger Animation for Cards */
+.stagger-animate > *:nth-child(1) { animation-delay: 0.05s; }
+.stagger-animate > *:nth-child(2) { animation-delay: 0.1s; }
+.stagger-animate > *:nth-child(3) { animation-delay: 0.15s; }
+.stagger-animate > *:nth-child(4) { animation-delay: 0.2s; }
+.stagger-animate > *:nth-child(5) { animation-delay: 0.25s; }
+.stagger-animate > *:nth-child(6) { animation-delay: 0.3s; }
+
+/* Leaflet map styles with military theme */
+.leaflet-container {
+  background: var(--tactical-dark);
+  border: 1px solid var(--steel-light);
+}
+
+.leaflet-popup-content-wrapper {
+  background: var(--steel-gray);
+  color: var(--text-primary);
+  border: 1px solid var(--radioactive-green);
+  border-radius: 0;
+  clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+}
+
+.leaflet-popup-tip {
+  background: var(--steel-gray);
+  border: 1px solid var(--radioactive-green);
+}
+
+.leaflet-control-zoom {
+  border: 1px solid var(--steel-light) !important;
+}
+
+.leaflet-control-zoom a {
+  background: var(--tactical-dark) !important;
+  color: var(--text-primary) !important;
+  border: 1px solid var(--steel-light) !important;
+}
+
+.leaflet-control-zoom a:hover {
+  background: var(--olive-drab) !important;
+  color: white !important;
+}
+
+/* Animations */
+@keyframes slideInRight {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+.animate-slide-in-right {
+  animation: slideInRight 0.3s ease-out forwards;
+}
+
+/* Leaflet cluster animations */
+.leaflet-cluster-anim .leaflet-marker-icon, .leaflet-cluster-anim .leaflet-marker-shadow {
+  -webkit-transition: -webkit-transform 0.3s ease-in-out;
+  transition: transform 0.3s ease-in-out;
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  
+  .scan-line, .glitch, .typewriter {
+    display: none;
+  }
+}

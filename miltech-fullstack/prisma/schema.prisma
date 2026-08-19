@@ -1,0 +1,97 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id           String        @id @default(uuid())
+  email        String        @unique
+  name         String?
+  password     String
+  role         Role          @default(USER)
+  balance      Int           @default(100000000)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  posts        Post[]
+  comments     Comment[]
+  listings     Listing[]
+  boughtTransactions Transaction[] @relation("BuyerTransactions")
+  soldTransactions   Transaction[] @relation("SellerTransactions")
+}
+
+enum Role {
+  USER
+  ADMIN
+  MODERATOR
+}
+
+model Post {
+  id        String   @id @default(uuid())
+  title     String
+  content   String
+  published Boolean  @default(false)
+  authorId  String
+  author    User     @relation(fields: [authorId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  comments  Comment[]
+}
+
+model Comment {
+  id        String   @id @default(uuid())
+  content   String
+  postId    String
+  post      Post     @relation(fields: [postId], references: [id])
+  authorId  String
+  author    User     @relation(fields: [authorId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum ListingStatus {
+  ACTIVE
+  SOLD
+  ARCHIVED
+}
+
+model Listing {
+  id             String         @id @default(uuid())
+  title          String
+  description    String
+  category       String
+  price          Float
+  location       String
+  latitude       Float?
+  longitude      Float?
+  status         ListingStatus  @default(ACTIVE)
+  year           Int?
+  combatWeight   Float?
+  country        String?
+  imageUrl       String?
+  attributes     Json?
+  has3D          Boolean        @default(false)
+  hasBlueprint   Boolean        @default(false)
+  compatible     String[]
+  sellerId       String
+  seller         User           @relation(fields: [sellerId], references: [id])
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  transactions   Transaction[]
+}
+
+model Transaction {
+  id        String   @id @default(uuid())
+  listingId String
+  listing   Listing  @relation(fields: [listingId], references: [id])
+  buyerId   String
+  buyer     User     @relation(fields: [buyerId], references: [id], onDelete: Cascade, name: "BuyerTransactions")
+  sellerId  String
+  seller    User     @relation(fields: [sellerId], references: [id], onDelete: Cascade, name: "SellerTransactions")
+  createdAt DateTime @default(now())
+}
