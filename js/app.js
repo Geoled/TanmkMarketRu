@@ -1,3 +1,33 @@
+// --- API INTEGRATION ---
+const API_BASE_URL = window.API_BASE_URL || 'http://localhost:3000/api';
+
+// Функция для загрузки данных с бэкенда
+async function fetchListingsFromAPI() {
+    try {
+        const params = new URLSearchParams();
+        if (state.category !== 'all') params.append('category', state.category);
+        if (state.search) params.append('search', state.search);
+        if (state.maxPrice) params.append('maxPrice', state.maxPrice.toString());
+        if (state.has3D) params.append('has3D', 'true');
+        if (state.hasBlueprint) params.append('hasBlueprint', 'true');
+        if (state.sortBy) params.append('sort', state.sortBy);
+
+        const response = await fetch(`${API_BASE_URL}/listings?${params.toString()}`);
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        return Array.isArray(data) ? data : [];
+    } catch (error) {
+        console.error('Ошибка при загрузке данных с бэкенда:', error);
+        // Fallback на локальные данные если бэкенд недоступен
+        console.log('Используем локальные данные как fallback');
+        return listingsData;
+    }
+}
+
 // --- STATE MANAGEMENT ---
 const state = {
     search: '',
@@ -15,7 +45,7 @@ let activeMap = null;
 const formatPrice = (price) => new Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB', maximumFractionDigits: 0 }).format(price);
 
 // --- CORE FILTER & RENDER LOGIC ---
-function applyFilters() {
+async function applyFilters() {
     // 1. Считываем состояние из DOM
     state.search = document.getElementById('mainSearch').value.toLowerCase();
     state.maxPrice = document.getElementById('filterPrice').checked ? 10000000 : null;
@@ -23,20 +53,26 @@ function applyFilters() {
     state.hasBlueprint = document.getElementById('filterBlueprint').checked;
     state.sortBy = document.getElementById('sortSelect').value;
 
-    // 2. Фильтрация
-    let filtered = listingsData.filter(item => {
-        const matchesSearch = item.title.toLowerCase().includes(state.search) || 
-                              item.categoryLabel.toLowerCase().includes(state.search) ||
-                              item.description.toLowerCase().includes(state.search);
-        const matchesCategory = state.category === 'all' ? true :
-                                state.category === 'demilitarized' ? (item.status === 'demilitarized' || item.status === 'museum') :
-                                item.category === state.category;
-        const matchesPrice = state.maxPrice ? item.price <= state.maxPrice : true;
-        const matches3D = state.has3D ? item.has3D : true;
-        const matchesBlueprint = state.hasBlueprint ? item.hasBlueprint : true;
+    // 2. Пытаемся загрузить данные с бэкенда API
+    let filtered = await fetchListingsFromAPI();
+    
+    // Если данные пришли пустые или произошла ошибка, используем локальные данные
+    if (filtered.length === 0 && listingsData && listingsData.length > 0) {
+        // Применяем фильтрацию на локальных данных
+        filtered = listingsData.filter(item => {
+            const matchesSearch = item.title.toLowerCase().includes(state.search) || 
+                                  item.categoryLabel.toLowerCase().includes(state.search) ||
+                                  item.description.toLowerCase().includes(state.search);
+            const matchesCategory = state.category === 'all' ? true :
+                                    state.category === 'demilitarized' ? (item.status === 'demilitarized' || item.status === 'museum') :
+                                    item.category === state.category;
+            const matchesPrice = state.maxPrice ? item.price <= state.maxPrice : true;
+            const matches3D = state.has3D ? item.has3D : true;
+            const matchesBlueprint = state.hasBlueprint ? item.hasBlueprint : true;
 
-        return matchesSearch && matchesCategory && matchesPrice && matches3D && matchesBlueprint;
-    });
+            return matchesSearch && matchesCategory && matchesPrice && matches3D && matchesBlueprint;
+        });
+    }
 
     // 3. Сортировка
     filtered.sort((a, b) => {
@@ -266,7 +302,7 @@ function showComparison() {
 }
 
 // --- INIT ---
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     // Привязываем поиск к вводу с задержкой (debounce)
     let timeout;
     document.getElementById('mainSearch').addEventListener('input', (e) => {
@@ -277,7 +313,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 300);
     });
     
-    applyFilters(); // Первичный рендер
+    await applyFilters(); // Первичный рендер с загрузкой данных из API
 });
 
 document.addEventListener('keydown', (e) => {
