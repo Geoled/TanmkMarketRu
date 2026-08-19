@@ -1,18 +1,25 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Rajdhani, Inter, Share_Tech_Mono } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { ToastProvider } from "@/context/ToastContext";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
+const rajdhani = Rajdhani({
+  variable: "--font-rajdhani",
+  subsets: ["latin", "cyrillic"],
+  weight: ["500", "600", "700"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const inter = Inter({
+  variable: "--font-inter",
+  subsets: ["latin", "cyrillic"],
+});
+
+const shareTechMono = Share_Tech_Mono({
+  variable: "--font-share-tech-mono",
   subsets: ["latin"],
+  weight: ["400"],
 });
 
 export const metadata: Metadata = {
@@ -70,12 +77,18 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html
       lang="ru"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${rajdhani.variable} ${inter.variable} ${shareTechMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-[var(--bg-primary)] text-[var(--text-primary)]">
+      <body className="min-h-full flex flex-col bg-[var(--tactical-black)] text-[var(--text-primary)] font-sans">
+        {/* Noise overlay for gritty military feel */}
+        <div className="noise-overlay pointer-events-none fixed inset-0 z-50" />
+        
+        {/* Scan line effect (optional, can be toggled) */}
+        <div className="scan-line" />
+        
         <ToastProvider>
           <Header />
-          <main className="flex-1">{children}</main>
+          <main className="flex-1 relative z-10">{children}</main>
           <Footer />
         </ToastProvider>
       </body>
