@@ -15,12 +15,14 @@ model User {
   name         String?
   password     String
   role         Role          @default(USER)
+  balance      Int           @default(100000000) // Стартовые 100M кредитов
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
   posts        Post[]
   comments     Comment[]
   listings     Listing[]
-  transactions Transaction[]
+  transactions Transaction[] @relation("BuyerTransactions")
+  boughtTransactions Transaction[] @relation("SellerTransactions")
 }
 
 enum Role {
@@ -88,6 +90,8 @@ model Transaction {
   listingId String
   listing   Listing  @relation(fields: [listingId], references: [id])
   buyerId   String
-  buyer     User     @relation(fields: [buyerId], references: [id])
+  buyer     User     @relation(fields: [buyerId], references: [id], onDelete: Cascade)
+  sellerId  String
+  seller    User     @relation(fields: [sellerId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
 }
